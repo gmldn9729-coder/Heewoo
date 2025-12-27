@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeong Hee-woo | UX Designer</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+
+    <style>
+        /* --- CSS Reset & Variables --- */
+        :root {
+            --bg-color: #121212;
+            --text-main: #EAEAEA;
+            --text-sub: #888888;
+            --accent-color: #A0C4C4; /* Muted Mint */
+            --font-main: 'Pretendard', 'Noto Sans KR', sans-serif;
+            --section-gap: 140px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background-color: var(--bg-color);
+        }
+
+        body {
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- Background Layers --- */
+        #bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url('image_e6987f.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.25) grayscale(0.2);
+            z-index: -2;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Layout & Typography --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- Header & Nav (Sticky) --- */
+        header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            /* 수정됨: 300(Light) -> 400(Regular)로 살짝 볼드하게 */
+            font-weight: 400; 
+            letter-spacing: 2px;
+            color: var(--text-main);
+        }
+        
+        .logo span {
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            font-size: 0.85rem;
+            /* 메뉴는 여전히 가볍게 유지 (선택사항) */
+            font-weight: 300; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.3s, color 0.3s;
+        }
+
+        nav ul li a:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* --- Hero Section (Profile) --- */
+        .hero {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* 수정됨: 메인 이름 타이틀 */
+        .hero h1 {
+            font-size: 3rem; /* 사이즈 줄임 (3.5rem -> 3rem) */
+            margin-bottom: 15px;
+            font-weight: 600; /* 볼드감 줌 (300 -> 600 Semi-Bold) */
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .hero h2 {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 20px;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            font-weight: 300;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        /* --- Portfolio Button --- */
+        .btn-portfolio {
+            display: inline-block;
+            padding: 12px 36px;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            border-radius: 50px;
+            transition: all 0.4s ease;
+            letter-spacing: 1px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .btn-portfolio:hover {
+            background: rgba(160, 196, 196, 0.15);
+            box-shadow: 0 0 20px rgba(160, 196, 196, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* --- Sections (Common & Motion) --- */
+        section {
+            padding: var(--section-gap) 0;
+            opacity: 0; 
+            transform: translateY(40px);
+            transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 수정됨: 섹션 타이틀 */
+        .section-title {
+            font-size: 2rem;
+            /* 300(Light) -> 400(Regular)로 살짝 볼드하게 */
+            font-weight: 400; 
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        /* --- List Styles & Hover Interaction (Focus Effect) --- */
+        dl {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .list-row {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 50px;
+            transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
+        }
+
+        .list-row:last-child {
+            border-bottom: none;
+        }
+
+        dl:hover .list-row {
+            opacity: 0.3;
+            filter: blur(1px);
+        }
+
+        dl .list-row:hover {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1.01);
+        }
+
+        dt {
+            width: 220px;
+            flex-shrink: 0;
+            font-weight: 400;
+            color: var(--accent-color);
+            font-size: 1rem;
+            padding-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        dd {
+            flex-grow: 1;
+        }
+
+        dd h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        dd p {
+            color: var(--text-sub);
+            line-height: 1.7;
+            margin-bottom: 12px;
+            font-weight: 300;
+            font-size: 0.95rem;
+        }
+
+        dd ul {
+            list-style: none;
+            padding-left: 0;
+            color: var(--text-sub);
+            line-height: 1.7;
+            font-weight: 300;
+            font-size: 0.95rem;
+        }
+        
+        dd ul li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 4px;
+        }
+
+        dd ul li::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 80px 0;
+            text-align: center;
+            color: #555;
+            font-size: 0.85rem;
+            font-weight: 300;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Responsive Design (Mobile) --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .hero h2 { font-size: 1rem; }
+            
+            nav { display: none; }
+            .header-inner { justify-content: center; }
+            
+            .list-row {
+                flex-direction: column;
+                gap: 15px;
+                padding-bottom: 30px;
+            }
+            
+            dt {
+                width: 100%;
+                margin-bottom: 5px;
+                font-size: 0.9rem;
+            }
+
+            dd h3 { font-size: 1.2rem; }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            dl:hover .list-row { opacity: 1; filter: none; }
+            dl .list-row:hover { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-image"></div>
+    <canvas id="plexusCanvas"></canvas>
+
+    <header>
+        <div class="container header-inner">
+            <div class="logo">HEEWOO<span>.JEONG</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#career">01. Career</a></li>
+                    <li><a href="#projects">02. Projects</a></li>
+                    <li><a href="#awards">03. Experience</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container visible">
+            <h1>정희우</h1>
+            <h2>UXUI Designer</h2>
+            <div class="contact-info">
+                <span>010-7917-9729</span>
+                <span>|</span>
+                <span>gmldn9729@gmail.com</span>
+            </div>
+            </section>
+
+        <section id="career" class="container">
+            <h2 class="section-title">01. CAREER HISTORY</h2>
+            <dl>
+                <div class="list-row">
+                    <dt>2025.04 - Present</dt>
+                    <dd>
+                        <h3>Peaknic.</h3>
+                        <p>UX Designer</p>
+                        <ul>
+                            <li>리서치 기반 UX Strategy 구축 업무</li>
+                            <li>고객사 고유 특허 기술을 기반한 리서치 및 시나리오 화면 작업 주도</li>
+                            <li>금융권 앱 UX 운용업무</li>
+                        </ul>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>2021.07 - 2022.03</dt>
+                    <dd>
+                        <h3>Turing AI Cultur(Berlin).</h3>
+                        <p>AI Assistant</p>
+                        <ul>
+                            <li>AI 프로그램 사용 업무 보조</li>
+                            <li>프로그램 내 이슈 해결</li>
+                            <li>태그 분류 업무</li>
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        </section>
+
+        <section id="projects" class="container">
+            <h2 class="section-title">02. PROJECT HISTORY</h2>
+            <dl>
+                <div class="list-row">
+                    <dt>Work Experience</dt>
+                    <dd>
+                        <h3>Tier_1 Financial Institution UX Operation & Improvement</h3>
+                        <p>의뢰서 분석을 기반한 요구사항 정의 및 기획서(SB) 작성 / 협업(업무 조율)을 통한 실제 금융환경에서의 운용 기반 UX 개선 경험.</p>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>Work Experience</dt>
+                    <dd>
+                        <h3>Construction Multi_Device UX Strategy</h3>
+                        <p>리서치를 바탕으로 한 UX 전략 설계 및 전략을 기반으로 한 UI 설계.</p>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>Work Experience</dt>
+                    <dd>
+                        <h3>Global Electronics Vehicle CID UX Design</h3>
+                        <p>고객사 고유 특허 기술을 고려한 UX전략 / 다양한 상황을 고려해 안전·인주부하 최소화 UX 원칙 수립 / 기능 구조와 흐름을 고려한 화면 설계 .</p>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>Personal Project</dt>
+                    <dd>
+                        <h3>Football Match Experience UXUI Design</h3>
+                        <p>경기 전·중·후 맥락을 고려한 UX 전략 수립 / 전략을 바탕으로 한 기능을 담은 화면 설계 및 디자인 .</p>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>Personal Project</dt>
+                    <dd>
+                        <h3>Personalized Coffee Experience UXUI Design</h3>
+                        <p>사용자 수준·취향 기반 UX 전략 수립 / 전략을 기반으로 한 경험 중심적 화면 설계 및 디자인 .</p>
+                    </dd>
+                </div>
+            </dl>
+        </section>
+
+        <section id="awards" class="container">
+            <h2 class="section-title">03. Experience</h2>
+            <dl>
+                <div class="list-row">
+                    <dt>2021.06</dt>
+                    <dd>
+                        <h3>Berlin, Germany</h3>
+                        <p>Study (German B2 Level).</p>
+                    </dd>
+                </div>
+                <div class="list-row">
+                    <dt>2014.01</dt>
+                    <dd>
+                        <h3>Auckland, New Zealand</h3>
+                        <p>Exchange Student (English IH Level).</p>
+                    </dd>
+                </div>
+            </dl>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Jung Hee-woo. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* --- 1. Canvas Setup --- */
+        const canvas = document.getElementById('plexusCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        
+        const particleCount = window.innerWidth < 768 ? 50 : 100;
+        const connectionDistance = 130;
+        const mouseDistance = 180;
+
+        let mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        /* --- 2. Particle Class --- */
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.color = 'rgba(180, 180, 180, 0.5)'; 
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouseDistance) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouseDistance - distance) / mouseDistance;
+                        const directionX = forceDirectionX * force * 1.5; 
+                        const directionY = forceDirectionY * force * 1.5;
+
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        /* --- 3. Animation Loop --- */
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        let opacity = 1 - (distance / connectionDistance);
+                        ctx.strokeStyle = `rgba(150, 150, 150, ${opacity * 0.3})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        initCanvas();
+        animate();
+
+        /* --- 4. Intersection Observer (Smoother Fade-in) --- */
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+    </script>
+</body>
+</html>
